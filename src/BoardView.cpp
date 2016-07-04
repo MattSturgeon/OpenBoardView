@@ -13,6 +13,9 @@
 #include "NetList.h"
 #include "PartList.h"
 
+// Need this for keycodes
+#include <GLFW/glfw3.h>
+
 #include "platform.h"
 
 using namespace std;
@@ -34,12 +37,15 @@ void BoardView::Update() {
 	float menu_height = 0;
 	ImGuiIO &io = ImGui::GetIO();
 
-	if (ImGui::IsKeyDown(17) && ImGui::IsKeyPressed('O', false)) {
+	if (io.KeyCtrl && ImGui::IsKeyPressed(GLFW_KEY_O, false)) {
 		open_file = true;
 		// the dialog will likely eat our WM_KEYUP message for CTRL and O:
-		io.KeysDown[17] = false;
-		io.KeysDown['O'] = false;
+		io.KeyCtrl = false;
+		io.KeysDown[GLFW_KEY_LEFT_CONTROL] = false;
+		io.KeysDown[GLFW_KEY_RIGHT_CONTROL] = false;
+		io.KeysDown[GLFW_KEY_O] = false;
 	}
+
 	if (ImGui::BeginMainMenuBar()) {
 		menu_height = ImGui::GetWindowHeight();
 		if (ImGui::BeginMenu("File")) {
@@ -122,11 +128,11 @@ void BoardView::Update() {
 			}
 
 			// Enter and Esc close the search:
-			if (ImGui::IsKeyPressed(13)) {
+			if (ImGui::IsKeyPressed(GLFW_KEY_ENTER)) {
 				SetNetFilter(first_button);
 				ImGui::CloseCurrentPopup();
 			}
-			if (ImGui::Button("Clear") || ImGui::IsKeyPressed(27)) {
+			if (ImGui::Button("Clear") || ImGui::IsKeyPressed(GLFW_KEY_ESCAPE)) {
 				SetNetFilter("");
 				ImGui::CloseCurrentPopup();
 			}
@@ -159,11 +165,11 @@ void BoardView::Update() {
 				}
 			}
 			// Enter and Esc close the search:
-			if (ImGui::IsKeyPressed(13)) {
+			if (ImGui::IsKeyPressed(GLFW_KEY_ENTER)) {
 				FindComponent(first_button);
 				ImGui::CloseCurrentPopup();
 			}
-			if (ImGui::Button("Clear") || ImGui::IsKeyPressed(27)) {
+			if (ImGui::Button("Clear") || ImGui::IsKeyPressed(GLFW_KEY_ESCAPE)) {
 				FindComponent("");
 				ImGui::CloseCurrentPopup();
 			}
@@ -172,7 +178,7 @@ void BoardView::Update() {
 		if (ImGui::BeginPopupModal("About", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 			ImGui::Text("OpenBoardView");
 			ImGui::Text("https://github.com/chloridite/OpenBoardView");
-			if (ImGui::Button("Close") || ImGui::IsKeyPressed(27)) {
+			if (ImGui::Button("Close") || ImGui::IsKeyPressed(GLFW_KEY_ESCAPE)) {
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::Indent();
@@ -326,9 +332,13 @@ void BoardView::HandleInput() {
 			const ImVec2 &target = io.MousePos;
 			ImVec2 coord = ScreenToCoord(target.x, target.y);
 			mwheel *= 0.5f;
-			// Ctrl slows down the zoom speed:
-			if (ImGui::IsKeyDown(17)) {
+			// Ctrl slows down the zoom speed,
+			// Shift speeds it up:
+			if (io.KeyCtrl) {
 				mwheel *= 0.1f;
+			}
+			else if (io.KeyShift) {
+				mwheel *= 2;
 			}
 			m_scale = m_scale * powf(2.0f, mwheel);
 
@@ -341,36 +351,37 @@ void BoardView::HandleInput() {
 	}
 	if (!io.WantCaptureKeyboard) {
 		// Flip board:
-		if (ImGui::IsKeyPressed(' ')) {
+		if (ImGui::IsKeyPressed(GLFW_KEY_SPACE)) {
 			FlipBoard();
 		}
 
 		// Rotate board: R and period rotate clockwise; comma rotates
 		// counter-clockwise
-		if (ImGui::IsKeyPressed('R') || ImGui::IsKeyPressed(190)) {
-			Rotate(1);
-		}
-		if (ImGui::IsKeyPressed(188)) {
+
+		if (((io.KeyCtrl || io.KeyShift) && ImGui::IsKeyPressed(GLFW_KEY_R)) || ImGui::IsKeyPressed(GLFW_KEY_COMMA)) {
 			Rotate(-1);
+		}
+		else if (ImGui::IsKeyPressed(GLFW_KEY_R) || ImGui::IsKeyPressed(GLFW_KEY_PERIOD)) {
+			Rotate(1);
 		}
 
 		// Search for net
-		if (ImGui::IsKeyPressed('N')) {
+		if (ImGui::IsKeyPressed(GLFW_KEY_N)) {
 			m_showNetfilterSearch = true;
 		}
 
 		// Search for component
-		if (ImGui::IsKeyPressed('C')) {
+		if (ImGui::IsKeyPressed(GLFW_KEY_C)) {
 			m_showComponentSearch = true;
 		}
 
 		// Show Net List
-		if (ImGui::IsKeyPressed('L')) {
+		if (ImGui::IsKeyPressed(GLFW_KEY_L)) {
 			m_showNetList = m_showNetList ? false : true;
 		}
 
 		// Show Part List
-		if (ImGui::IsKeyPressed('K')) {
+		if (ImGui::IsKeyPressed(GLFW_KEY_K)) {
 			m_showPartList = m_showPartList ? false : true;
 		}
 	}

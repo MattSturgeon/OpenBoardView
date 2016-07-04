@@ -2,13 +2,15 @@
 #
 #
 
-# These files will be added to the main target later
-set(ASSETS
-	"${CMAKE_CURRENT_SOURCE_DIR}/OpenBoardView.rc" # Needed for MSVS resource compiler
-	"${CMAKE_CURRENT_SOURCE_DIR}/FiraSans-Medium.ttf"
-	"${CMAKE_CURRENT_SOURCE_DIR}/empty_circle.dds"
-	PARENT_SCOPE # Send this to everyone
-)
+if (MSVC)
+	# Needed for MSVS resource compiler
+	set(ICON "${CMAKE_CURRENT_SOURCE_DIR}/OpenBoardView.rc" PARENT_SCOPE)
+elseif(APPLE)
+	# Used for app bundle
+	set(ICON "${CMAKE_CURRENT_SOURCE_DIR}/brd.icns" PARENT_SCOPE)
+	set_source_files_properties("brd.icns" PROPERTIES
+		MAXOSX_PACKAGE_LOCATION "Resources")
+endif()
 
 # WiX Installer images
 set(CPACK_WIX_PRODUCT_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\brd.ico" PARENT_SCOPE) # icon for Add/Remove with WiX installer

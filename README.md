@@ -10,8 +10,7 @@ Software for viewing .brd files, intended as a drop-in replacement for the
 Downloadable an executable from the [Releases page](https://github.com/chloridite/OpenBoardView/releases)
 and run it.
 
-If you run into any issues starting the executable, you may need to install
-the [DirectX 9.0c End-user Runtime](https://www.microsoft.com/en-us/download/details.aspx?id=8109).
+If you run into any issues starting the executable, you may need to install [OpenGL](https://www.opengl.org/wiki/Getting_Started).
 
 ### Usage
 

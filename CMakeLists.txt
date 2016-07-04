@@ -22,29 +22,41 @@ set(INSTALL_RUNTIME_DIR bin CACHE PATH "The location to install binary executabl
 # TODO: asset, lib, include, etc
 
 ## System libraries
-set(PLATFORM_LIBS
-	#imm32.lib
-	d3d9.lib
-	kernel32.lib
-	user32.lib
-	gdi32.lib
-	winspool.lib
-	comdlg32.lib
-	advapi32.lib
-	shell32.lib
-	ole32.lib
-	oleaut32.lib
-	uuid.lib
-	odbc32.lib
-	odbccp32.lib
-)
+set(PLATFORM_LIBS)
+
+if(WIN32)
+	set(PLATFORM_LIBS ${PLATFORM_LIBS}
+		kernel32.lib
+		user32.lib
+		gdi32.lib
+		winspool.lib
+		comdlg32.lib
+		advapi32.lib
+		shell32.lib
+		ole32.lib
+		oleaut32.lib
+		uuid.lib
+		odbc32.lib
+		odbccp32.lib
+	)
+elseif(APPLE)
+	# Pass -framework flag to linker and also link objc for platform_osx.mm
+	set(PLATFORM_LIBS ${PLATFORM_LIBS} "-framework Cocoa" objc)
+else()
+	# On other systems, just use GTK+ 3
+	find_package(PkgConfig REQUIRED)
+	pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+
+	link_directories(${GTK3_LIBRARY_DIRS})
+	add_definitions(${GTK3_CFLAGS_OTHER})
+	set(PLATFORM_LIBS ${PLATFORM_LIBS} ${GTK3_LIBRARIES}) # actual libs
+endif()
 
 ## Add library targets
 add_subdirectory(lib)
 
 # Add libs to a solution folder
-set_target_properties(imgui
-	PROPERTIES FOLDER Libraries)
+set_target_properties(${LIBS} PROPERTIES FOLDER Libraries)
 
 ## Add assets
 add_subdirectory(asset)

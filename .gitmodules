@@ -1,0 +1,7 @@
+[submodule "utf8"]
+	path = lib/utf8
+	url = https://github.com/OpenBoardView/utf8.h.git
+	branch = casestr
+[submodule "imgui"]
+	path = lib/imgui
+	url = https://github.com/ocornut/imgui.git

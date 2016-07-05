@@ -5,7 +5,7 @@ BreakBeforeBraces: Attach
 BreakConstructorInitializersBeforeComma: true
 AlwaysBreakTemplateDeclarations: true
 AlwaysBreakBeforeMultilineStrings: true
-IndentWidth: 4
-TabWidth: 4
+IndentWidth: 2
+TabWidth: 2
 UseTab: ForIndentation
 ColumnLimit: 100

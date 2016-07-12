@@ -4,6 +4,8 @@
 #include "imgui.h"
 #include <stdint.h>
 #include <Windows.h>
+#include <Shobjidl.h>
+#include <atlbase.h>
 #include <assert.h>
 
 wchar_t *utf8_to_wide(const char *s) {
@@ -63,20 +65,69 @@ char *file_as_buffer(size_t *buffer_size, const char *utf8_filename) {
 	return buf;
 }
 
-char *show_file_picker() {
+// Not used in this branch, kept for comparison
+char *old_show_file_picker() {
 	OPENFILENAME ofn;
 	wchar_t filename[1024];
 	filename[0] = 0;
 	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = (HWND)ImGui::GetIO().ImeWindowHandle;
-	ofn.lpstrFilter = L"All Files\0*.*\0\0";
+	ofn.lpstrFilter = L"BRD Files\0*.brd\0All Files\0*.*\0\0";
 	ofn.lpstrFile = filename;
 	ofn.nMaxFile = 1024;
 	if (GetOpenFileName(&ofn)) {
 		return wide_to_utf8(filename);
 	}
 	return nullptr;
+}
+
+char *show_file_picker() {
+	char *filename = nullptr;
+
+	HRESULT hr;
+	IFileOpenDialog *pDlg;
+	COMDLG_FILTERSPEC fileTypes[] = {
+		// This is kinda nice
+		{ L"BRD files", L"*.brd" },
+		{ L"All files", L"*.*" }
+	};
+
+	// Create the file-open dialog COM object.
+	hr = CoCreateInstance(CLSID_FileOpenDialog,
+	                 NULL,
+	                 CLSCTX_INPROC_SERVER,
+	                 IID_PPV_ARGS(&pDlg));
+
+	if ( FAILED(hr) ) return nullptr;
+
+	// Set the dialog's caption text and the available file types.
+	// NOTE: Error handling omitted here for clarity.
+	pDlg->SetFileTypes ( _countof(fileTypes), fileTypes );
+	pDlg->SetTitle ( L"Open File" );
+
+	// Show the dialog.
+	hr = pDlg->Show ( NULL ); // `(HWND)ImGui::GetIO().ImeWindowHandle` breaks things
+
+	// If the user chose a file, show a message box with the
+	// full path to the file.
+	if ( SUCCEEDED(hr) ) {
+		IShellItem *pItem;
+
+		hr = pDlg->GetResult ( &pItem );
+
+		if ( SUCCEEDED(hr) ) {
+			PWSTR pszFilePath = NULL;
+
+			hr = pItem->GetDisplayName ( SIGDN_FILESYSPATH, &pszFilePath );
+
+			if ( SUCCEEDED(hr) ) {
+				filename = wide_to_utf8(pszFilePath);
+				CoTaskMemFree ( pszFilePath );
+			}
+		}
+	}
+	return filename;
 }
 
 unsigned char *LoadAsset(int *asset_size, int asset_id) {

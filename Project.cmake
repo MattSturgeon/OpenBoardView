@@ -37,7 +37,7 @@ if(WIN32)
 	# Install binaries in the root of the install directory
 	set(INSTALL_BIN_DIR "/" CACHE PATH "Where to place binaries in the instalation. Will be appended to CPACK_PACKAGE_INSTALL_DIRECTORY.")
 elseif(APPLE)
-	set(INSTALL_BIN_DIR "MacOS")
+	set(INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX})
 else()
 	set(INSTALL_BIN_DIR "bin" CACHE PATH "Where to place binaries in the instalation. Relative paths will be appended to the PREFIX")
 	set(INSTALL_SHARE_DIR "share" CACHE PATH "Where to install \"shared\" directories like icon and applications. Relative paths will be appended to the PREFIX")

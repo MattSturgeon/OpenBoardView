@@ -34,7 +34,7 @@ matrix:
         - brew install glfw3 tree # Using tree for viewing build dir
       before_script:
         - mkdir build; cd build
-        - export GENERATORS="DragNDrop;STGZ"
+        - export GENERATORS="DragNDrop;ZIP;STGZ"
 
 script:
   - cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)" -DCPACK_GENERATOR="${GENERATORS}"

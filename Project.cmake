@@ -68,7 +68,7 @@ if(WIN32)
 	# or running CPack without specifying a generator
 	set(CPACK_GENERATOR  WIX ZIP CACHE STRING "List of generators to build packages with")
 elseif(APPLE)
-	set(CPACK_GENERATOR  DragNDrop STGZ  CACHE STRING "List of generators to build packages with")
+	set(CPACK_GENERATOR  DragNDrop ZIP STGZ  CACHE STRING "List of generators to build packages with")
 else()
 	# Debian
 	set(CPACK_DEBIAN_PACKAGE_SECTION "electronics")

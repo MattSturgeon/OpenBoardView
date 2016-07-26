@@ -6,10 +6,10 @@
 #include "imgui_impl_dx9.h"
 #include <d3d9.h>
 #define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-#include <tchar.h>
 #include "crtdbg.h"
 #include "platform.h"
+#include <dinput.h>
+#include <tchar.h>
 
 // Data
 static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
@@ -52,18 +52,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// Create application window
 	HINSTANCE instance = GetModuleHandle(NULL);
 	HICON icon = LoadIcon(instance, MAKEINTRESOURCE(IDI_ICON1));
-	WNDCLASSEX wc = {sizeof(WNDCLASSEX),
-	                 CS_CLASSDC,
-	                 WndProc,
-	                 0L,
-	                 0L,
-	                 instance,
-	                 icon,
-	                 NULL,
-	                 NULL,
-	                 NULL,
-	                 class_name,
-	                 NULL};
+	WNDCLASSEX wc = {sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L,   0L,
+	                 instance,           icon,       NULL,    NULL, NULL,
+	                 class_name,         NULL};
 	RegisterClassEx(&wc);
 	HWND hwnd =
 	    CreateWindow(class_name, _T("Open Board Viewer"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,

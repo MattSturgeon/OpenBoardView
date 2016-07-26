@@ -3,18 +3,18 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include "platform.h"
 #include "imgui.h"
-#include <iostream>
-#include <fstream>
-#include <stdint.h>
 #include <assert.h>
+#include <fstream>
+#include <iostream>
+#include <stdint.h>
 
 #ifndef __APPLE__
 #include <gtk/gtk.h>
-#endif  // ! __APPLE__
+#endif // ! __APPLE__
 
 char *file_as_buffer(size_t *buffer_size, const char *utf8_filename) {
 	std::ifstream file;
-	file.open(utf8_filename,  std::ios::in | std::ios::binary | std::ios::ate);
+	file.open(utf8_filename, std::ios::in | std::ios::binary | std::ios::ate);
 	if (!file.is_open()) {
 		std::cerr << "Error opening " << utf8_filename << ": " << strerror(errno) << std::endl;
 		*buffer_size = 0;
@@ -44,12 +44,9 @@ char *show_file_picker() {
 
 	parent = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
- 	dialog = gtk_file_chooser_dialog_new( "Open File",
-					GTK_WINDOW(parent),
-					GTK_FILE_CHOOSER_ACTION_OPEN,
-					"_Cancel", GTK_RESPONSE_CANCEL,
-					"_Open", GTK_RESPONSE_ACCEPT,
-					NULL );
+	dialog = gtk_file_chooser_dialog_new("Open File", GTK_WINDOW(parent),
+	                                     GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel",
+	                                     GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 
 	/* Filter file types */
 	// TODO: use a static/const array of filters
@@ -78,11 +75,11 @@ char *show_file_picker() {
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename = nullptr;
 
- 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		size_t len = strlen(filename);
-		path = (char *)malloc(len+1);
-		memcpy(path, filename, len+1);
-		if (!path ) {
+		path = (char *)malloc(len + 1);
+		memcpy(path, filename, len + 1);
+		if (!path) {
 			g_free(filename);
 			gtk_widget_destroy(dialog);
 			return nullptr;
@@ -95,8 +92,8 @@ char *show_file_picker() {
 
 	gtk_widget_destroy(dialog);
 
- 	while (gtk_events_pending())
- 		gtk_main_iteration();
+	while (gtk_events_pending())
+		gtk_main_iteration();
 
 	return path;
 }

@@ -15,28 +15,28 @@
 	var = fix_to_utf8(s, &arena, arena_end);
 
 struct BRDPoint {
-    int x;
-    int y;
+	int x;
+	int y;
 };
 
 struct BRDPart {
-    char *name;
-    int type;
-    int end_of_pins;
+	char *name;
+	int type;
+	int end_of_pins;
 };
 
 struct BRDPin {
-    BRDPoint pos;
-    int probe;
-    int part;
-    char *net;
+	BRDPoint pos;
+	int probe;
+	int part;
+	char *net;
 };
 
 struct BRDNail {
-    int probe;
-    BRDPoint pos;
-    int side;
-    char *net;
+	int probe;
+	BRDPoint pos;
+	int side;
+	char *net;
 };
 
 struct BRDFile {

@@ -76,10 +76,10 @@ done:
 BRDFile::BRDFile(const char *buf, size_t buffer_size) {
 	memset(this, 0, sizeof(*this));
 
-	#define ENSURE(X) \
-	  assert(X);      \
-	  if (!(X))       \
-	    return;
+#define ENSURE(X)                                                                                  \
+	assert(X);                                                                                     \
+	if (!(X))                                                                                      \
+		return;
 
 	ENSURE(buffer_size > 4);
 	size_t file_buf_size = 3 * (1 + buffer_size);
@@ -118,13 +118,13 @@ BRDFile::BRDFile(const char *buf, size_t buffer_size) {
 		return;
 	char **lines_begin = lines;
 
-	#undef ENSURE
-	#define ENSURE(X)      \
-	  assert(X);           \
-	  if (!(X)) {          \
-	    free(lines_begin); \
-	    return;            \
-	  }
+#undef ENSURE
+#define ENSURE(X)                                                                                  \
+	assert(X);                                                                                     \
+	if (!(X)) {                                                                                    \
+		free(lines_begin);                                                                         \
+		return;                                                                                    \
+	}
 
 	while (*lines) {
 		char *line = *lines;

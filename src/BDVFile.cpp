@@ -1,9 +1,8 @@
 #include "BDVFile.h"
 
-#include "utf8.h"
+#include "utf8/utf8.h"
 #include <assert.h>
 #include <ctype.h>
-#include <locale.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -26,12 +25,16 @@ BDVFile::BDVFile(const char *buf, size_t buffer_size) {
 	saved_locale = setlocale(LC_NUMERIC, "C"); // Use '.' as delimiter for strtod
 
 	memset(this, 0, sizeof(*this));
-
+//#define ENSURE(X)                                                                                  \
+//	assert(X);                                                                                     \
+//	if (!(X))                                                                                      \
+//		goto FAIL_LABEL;
 #define ENSURE(X)                                                                                  \
 	assert(X);                                                                                     \
 	if (!(X))                                                                                      \
 		return;
 
+#define FAIL_LABEL fail
 	ENSURE(buffer_size > 4);
 	size_t file_buf_size = 3 * (1 + buffer_size);
 	file_buf = (char *)malloc(file_buf_size);
@@ -49,17 +52,10 @@ BDVFile::BDVFile(const char *buf, size_t buffer_size) {
 	char **lines = stringfile(file_buf);
 	if (!lines)
 		return;
-
+	//		goto fail;
 	char **lines_begin = lines;
-
-#undef ENSURE
-#define ENSURE(X)                                                                                  \
-	assert(X);                                                                                     \
-	if (!(X)) {                                                                                    \
-		free(lines_begin);                                                                         \
-		return;                                                                                    \
-	}
-
+#undef FAIL_LABEL
+#define FAIL_LABEL fail_lines
 	while (*lines) {
 		char *line = *lines;
 		++lines;
@@ -70,8 +66,7 @@ BDVFile::BDVFile(const char *buf, size_t buffer_size) {
 			continue;
 		if (!strcmp(line, "<<format.asc>>")) {
 			current_block = 1;
-			lines += 8; // Skip 8 unused lines before 1st point. Might not work with
-			            // all files.
+			lines += 8; // Skip 8 unused lines before 1st point. Might not work with all files.
 			continue;
 		}
 		if (!strcmp(line, "<<pins.asc>>")) {
@@ -111,6 +106,7 @@ BDVFile::BDVFile(const char *buf, size_t buffer_size) {
 				else
 					part.type = 5; // SMD part on bottom
 				part.end_of_pins = 0;
+				part.annotation = "";
 				parts.push_back(part);
 			} else {
 				BRDPin pin;
@@ -169,6 +165,9 @@ BDVFile::BDVFile(const char *buf, size_t buffer_size) {
 	setlocale(LC_NUMERIC, saved_locale); // Restore locale
 
 	valid = current_block != 0;
-
+fail_lines:
+	free(lines_begin);
+fail:;
+#undef FAIL_LABEL
 #undef ENSURE
 }

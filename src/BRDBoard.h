@@ -1,33 +1,48 @@
 #pragma once
 
+#include "BRDFile.h"
 #include "Board.h"
 
-#include <memory>
 #include <string.h>
 #include <vector>
 
-using namespace std;
-
 class BRDBoard : public Board {
   public:
-	BRDBoard(const BRDFile *const boardFile);
+	BRDBoard(const BRDFile *boardFile);
 	~BRDBoard();
-
-	const BRDFile *m_file;
 
 	EBoardType BoardType();
 
-	SharedVector<Net> &Nets();
-	SharedVector<Component> &Components();
-	SharedVector<Pin> &Pins();
-	SharedVector<Point> &OutlinePoints();
+	std::vector<BRDPart> Parts();
+	std::vector<BRDPin> Pins();
+	std::vector<BRDNail> Nails();
+	std::vector<BRDPoint> OutlinePoints();
+
+	// Uniquely named Net elements only.
+	std::vector<BRDNail> UniqueNetNails();
 
   private:
-	static const string kNetUnconnectedPrefix;
-	static const string kComponentDummyName;
+	static bool equalNames(BRDNail x, BRDNail y) {
+		return strcmp(x.net, y.net) == 0 ? true : false;
+	}
 
-	SharedVector<Net> nets_;
-	SharedVector<Component> components_;
-	SharedVector<Pin> pins_;
-	SharedVector<Point> outline_;
+	static bool cmpAlphabetically(BRDNail x, BRDNail y) {
+		return std::char_traits<char>::compare(x.net, y.net, MAX_COMP_NAME_LENGTH) < 0 ? true
+		                                                                               : false;
+	}
+
+	static char *getNetName(BRDNail nail) {
+		return nail.net;
+	}
+
+	bool FetchPartAnnotations();
+
+	const BRDFile *m_file;
+
+	std::vector<BRDPart> m_parts;
+	std::vector<BRDPin> m_pins;
+	std::vector<BRDNail> m_nails;
+	std::vector<BRDPoint> m_points;
+
+	std::vector<BRDNail> m_netUnique;
 };

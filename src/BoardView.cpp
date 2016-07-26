@@ -50,6 +50,15 @@ void BoardView::Update() {
 			if (ImGui::MenuItem("Open", "Ctrl+O")) {
 				m_open_file = true;
 			}
+			if (m_history.history.size() > 0) {
+				ImGui::Separator();
+				for (size_t i = 0; i < m_history.history.size(); i++) {
+					const std::string &filename = m_history.history.at(i);
+					if (ImGui::MenuItem(History::trim(filename).c_str()))
+						OpenFile(filename);
+				}
+				ImGui::Separator();
+			}
 			if (ImGui::MenuItem("Quit", "Ctrl+Q")) {
 				m_wantsQuit = true;
 			}
@@ -974,6 +983,7 @@ void BoardView::OpenFile(const std::string &filename) {
 		BRDFile *file = new BRDFile(buffer, buffer_size);
 		if (file->valid) {
 			SetFile(file);
+			m_history.add(filename);
 			m_wantsTitleChange = true;
 		} else {
 			// TODO: error details? -- would need the loader to say what's wrong.

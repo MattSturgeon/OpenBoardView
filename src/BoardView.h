@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Board.h"
+#include "History.h"
 #include "imgui.h"
 #include <stdint.h>
 #include <vector>
@@ -90,6 +91,7 @@ struct BoardView {
 	int m_boardWidth;
 	int m_boardHeight;
 	bool m_open_file;
+	History m_history;
 
 	ColorScheme m_colors;
 

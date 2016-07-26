@@ -11,6 +11,7 @@ set(SOURCES
 	BRDFile.cpp
 	NetList.cpp
 	PartList.cpp
+	History.cpp
 
 	imgui_impl_dx9.cpp
 	platform.cpp

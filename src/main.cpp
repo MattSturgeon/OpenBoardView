@@ -2,6 +2,7 @@
 // If you are new to ImGui, see examples/README.txt and documentation at the top of imgui.cpp.
 
 #include "BoardView.h"
+#include "History.h"
 
 #include "imgui_impl_dx9.h"
 #include <d3d9.h>
@@ -127,6 +128,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// Set flag to the new value.
 	_CrtSetDbgFlag(tmpFlag);
 #endif
+
+	app.m_history.load("C:\\Users\\Matt\\Dev\\openboardview\\build\\boardview.hist");
 
 	bool show_test_window = true;
 	bool show_another_window = false;

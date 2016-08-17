@@ -22,6 +22,8 @@ using namespace std::placeholders;
 #define stricmp _stricmp
 #endif
 
+BoardView app{};
+
 BoardView::~BoardView() {
 	delete m_file;
 	delete m_board;

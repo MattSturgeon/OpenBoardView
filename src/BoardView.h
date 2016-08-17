@@ -122,6 +122,9 @@ struct BoardView {
 
 	void ShowNetList(bool *p_open);
 	void ShowPartList(bool *p_open);
+	void ShowSearchNetfilter();
+	void ShowSearchComponent();
+	void ShowHelpAbout();
 
 	void Update();
 	void ChangeZoom(ImVec2 coord, float scale);

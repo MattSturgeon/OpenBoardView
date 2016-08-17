@@ -111,6 +111,7 @@ struct BoardView {
 	bool m_showWindowsNetList;
 	bool m_showWindowsPartList;
 	bool m_showHelpAbout;
+	bool m_showHelpControls;
 	bool m_firstFrame = true;
 	bool m_showError;
 	bool m_wantsQuit;
@@ -125,6 +126,7 @@ struct BoardView {
 	void ShowSearchNetfilter();
 	void ShowSearchComponent();
 	void ShowHelpAbout();
+	void ShowHelpControls();
 
 	void Update();
 	void ChangeZoom(ImVec2 coord, float scale);

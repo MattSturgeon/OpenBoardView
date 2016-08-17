@@ -82,6 +82,9 @@ void BoardView::Update() {
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help")) {
+			if (ImGui::MenuItem("Controls")) {
+				m_showHelpControls = true;
+			}
 			if (ImGui::MenuItem("About")) {
 				m_showHelpAbout = true;
 			}
@@ -362,20 +365,25 @@ void BoardView::RenderOverlay() {
 	if (m_showSearchComponent && m_file) {
 		ImGui::OpenPopup("Search for Component");
 	}
+	if (m_showHelpControls) {
+		ImGui::OpenPopup("Controls");
+	}
 	if (m_showHelpAbout) {
 		ImGui::OpenPopup("About");
-		m_showHelpAbout = false;
 	}
 	if (m_showError) {
 		ImGui::OpenPopup("Error");
-		m_showError = false;
 	}
 
 	ShowSearchNetfilter();
 	ShowSearchComponent();
 	ShowHelpAbout();
+	ShowHelpControls();
 
 	if (ImGui::BeginPopupModal("Error")) {
+		if (m_showError)
+			m_showError = false;
+
 		ImGui::Text("There was an error: %s", m_lastErrorMsg);
 		if (ImGui::Button("OK")) {
 			ImGui::CloseCurrentPopup();
@@ -478,8 +486,11 @@ void BoardView::ShowSearchComponent() {
 
 void BoardView::ShowHelpAbout() {
 	if (ImGui::BeginPopupModal("About", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+		if (m_showHelpAbout)
+			m_showHelpAbout = false;
+
 		ImGui::Text("OpenBoardView");
-		ImGui::Text("https://github.com/chloridite/OpenBoardView");
+		ImGui::Text("https://github.com/OpenBoardView/OpenBoardView");
 		if (ImGui::Button("Close") || ImGui::IsKeyPressed(27)) {
 			ImGui::CloseCurrentPopup();
 		}
@@ -512,6 +523,119 @@ void BoardView::ShowHelpAbout() {
 				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
 				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE "
 				"SOFTWARE.");
+		ImGui::EndPopup();
+	}
+}
+
+void BoardView::ShowHelpControls() {
+	if (ImGui::BeginPopupModal("Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+		if (m_showHelpControls)
+			m_showHelpControls = false;
+
+		ImGui::Text("KEYBOARD CONTROLS");
+		ImGui::SameLine();
+
+		if (ImGui::Button("Close") || ImGui::IsKeyPressed(27)) {
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::Separator();
+
+		ImGui::Columns(2);
+		ImGui::PushItemWidth(-1);
+		ImGui::Text("Open file");
+		ImGui::Text("Quit");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Pan up");
+		ImGui::Text("Pan down");
+		ImGui::Text("Pan left");
+		ImGui::Text("Pan right");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Search for Net");
+		ImGui::Text("Search for Component");
+		ImGui::Text("Display component list");
+		ImGui::Text("Display net list");
+		ImGui::Text("Clear all highlighted items");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Flip board");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Zoom in");
+		ImGui::Text("Zoom out");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Rotate clockwise");
+		ImGui::Text("Rotate anticlockwise");
+		ImGui::Spacing();
+		ImGui::Spacing();
+		
+		ImGui::Text("Slow down movement/zoom speed");
+		ImGui::Text("Speed up movement/zoom speed");
+
+		// Next column
+		ImGui::NextColumn();
+		ImGui::Text("Ctrl+O");
+		ImGui::Text("Ctrl+Q");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("W, Numpad Up, Up Arrow");
+		ImGui::Text("S, Numpad Down, Down Arrow");
+		ImGui::Text("A, Numpad Left, Left Arrow");
+		ImGui::Text("D, Numpad Right, Right Arrow");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("N");
+		ImGui::Text("C");
+		ImGui::Text("K");
+		ImGui::Text("L");
+		ImGui::Text("ESC");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Space bar");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("+, Numpad +, I");
+		ImGui::Text("-, Numpad -, O");
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("'.'");
+		ImGui::Text("','");
+		ImGui::Spacing();
+		ImGui::Spacing();
+		
+		ImGui::Text("Ctrl");
+		ImGui::Text("Shift");
+
+		ImGui::Columns(1);
+		ImGui::Separator();
+
+		// Next section
+		ImGui::Text("MOUSE CONTROLS");
+		ImGui::Separator();
+		ImGui::Columns(2);
+		ImGui::Text("Highlight pins on network");
+		ImGui::Text("Move board");
+		ImGui::Text("Zoom");
+
+		// Next column
+		ImGui::NextColumn();
+		ImGui::Text("Click (on pin)");
+		ImGui::Text("Click and drag");
+		ImGui::Text("Scroll");
+		ImGui::Columns(1);
+
 		ImGui::EndPopup();
 	}
 }

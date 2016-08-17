@@ -63,39 +63,48 @@ void BoardView::Update() {
 			}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Windows")) {
-			if (ImGui::MenuItem("Net List", "l")) {
-				m_showNetList = m_showNetList ? false : true;
+		if (ImGui::BeginMenu("Search")) {
+			if (ImGui::MenuItem("Net", "N")) {
+				m_showSearchNetfilter = true;
 			}
-			if (ImGui::MenuItem("Part List", "k")) {
-				m_showPartList = m_showPartList ? false : true;
+			if (ImGui::MenuItem("Component", "C")) {
+				m_showSearchComponent = true;
 			}
 			ImGui::EndMenu();
 		}
-		if (ImGui::Button("Net")) {
-			m_showNetfilterSearch = true;
+		if (ImGui::BeginMenu("Windows")) {
+			if (ImGui::MenuItem("Net List", "l")) {
+				m_showWindowsNetList = m_showWindowsNetList ? false : true;
+			}
+			if (ImGui::MenuItem("Part List", "k")) {
+				m_showWindowsPartList = m_showWindowsPartList ? false : true;
+			}
+			ImGui::EndMenu();
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Component")) {
-			m_showComponentSearch = true;
+		if (ImGui::BeginMenu("Help")) {
+			if (ImGui::MenuItem("About")) {
+				m_showHelpAbout = true;
+			}
+			ImGui::EndMenu();
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("About")) {
-			ImGui::OpenPopup("About");
-		}
-		if (m_showNetfilterSearch) {
+
+		if (m_showSearchNetfilter) {
 			ImGui::OpenPopup("Search for Net");
 		}
-		if (m_showComponentSearch && m_file) {
+		if (m_showSearchComponent && m_file) {
 			ImGui::OpenPopup("Search for Component");
+		}
+		if (m_showHelpAbout) {
+			ImGui::OpenPopup("About");
+			m_showHelpAbout = false;
 		}
 		if (m_showError) {
 			ImGui::OpenPopup("Error");
 			m_showError = false;
 		}
 		if (ImGui::BeginPopupModal("Search for Net", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-			if (m_showNetfilterSearch) {
-				m_showNetfilterSearch = false;
+			if (m_showSearchNetfilter) {
+				m_showSearchNetfilter = false;
 			}
 			if (ImGui::InputText("##search", m_search, 128)) {
 				SetNetFilter(m_search);
@@ -134,8 +143,8 @@ void BoardView::Update() {
 		}
 		if (ImGui::BeginPopupModal("Search for Component", nullptr,
 		                           ImGuiWindowFlags_AlwaysAutoResize)) {
-			if (m_showComponentSearch) {
-				m_showComponentSearch = false;
+			if (m_showSearchComponent) {
+				m_showSearchComponent = false;
 			}
 			if (ImGui::InputText("##search", m_search, 128)) {
 				FindComponent(m_search);
@@ -366,25 +375,23 @@ void BoardView::HandleInput() {
 
 		// Search for net
 		if (ImGui::IsKeyPressed('N')) {
-			m_showNetfilterSearch = true;
+			m_showSearchNetfilter = true;
 			return;
 		}
 
 		// Search for component
 		if (ImGui::IsKeyPressed('C')) {
-			m_showComponentSearch = true;
-			return;
-		}
+			m_showSearchComponent = true;
 
 		// Show Net List
 		if (ImGui::IsKeyPressed('L')) {
-			m_showNetList = m_showNetList ? false : true;
+			m_showWindowsNetList = m_showWindowsNetList ? false : true;
 			return;
 		}
 
 		// Show Part List
 		if (ImGui::IsKeyPressed('K')) {
-			m_showPartList = m_showPartList ? false : true;
+			m_showWindowsPartList = m_showWindowsPartList ? false : true;
 			return;
 		}
 
@@ -487,11 +494,11 @@ void BoardView::ShowPartList(bool *p_open) {
 
 void BoardView::RenderOverlay() {
 	// Listing of Net elements
-	if (m_showNetList) {
-		ShowNetList(&m_showNetList);
+	if (m_showWindowsNetList) {
+		ShowNetList(&m_showWindowsNetList);
 	}
-	if (m_showPartList) {
-		ShowPartList(&m_showPartList);
+	if (m_showWindowsPartList) {
+		ShowPartList(&m_showWindowsPartList);
 	}
 }
 #pragma endregion Showing UI floating above main workspace.

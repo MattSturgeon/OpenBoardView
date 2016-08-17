@@ -106,10 +106,11 @@ struct BoardView {
 	// The app will crash or break if this flag is not set when it should be.
 	bool m_needsRedraw = true;
 	bool m_draggingLastFrame;
-	bool m_showNetfilterSearch;
-	bool m_showComponentSearch;
-	bool m_showNetList;
-	bool m_showPartList;
+	bool m_showSearchNetfilter;
+	bool m_showSearchComponent;
+	bool m_showWindowsNetList;
+	bool m_showWindowsPartList;
+	bool m_showHelpAbout;
 	bool m_firstFrame = true;
 	bool m_showError;
 	bool m_wantsQuit;

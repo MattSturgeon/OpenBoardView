@@ -1,0 +1,31 @@
+version: 1.0.{build}
+configuration: Release
+platform: x86
+clone_depth: 5
+
+image:
+- Visual Studio 2017
+- Visual Studio 2015
+- Visual Studio 2013
+
+init:
+# Parse the image name into a cmake generator name
+- ps: $env:generator = (($env:APPVEYOR_BUILD_WORKER_IMAGE -replace "2017", "15 2017") -replace "2015", "14 2015") -replace "2013", "12 2013"
+- ps: $env:name_lower = $env:APPVEYOR_PROJECT_NAME.toLower()
+
+before_build:
+- cmd: md build
+- cmd: cd build
+- cmd: cmake .. -G "%generator%"
+
+build_script:
+- cmd: cmake --build . --target "%name_lower%" --config "%CONFIGURATION%"
+- cmd: cpack -C "%CONFIGURATION%"
+
+artifacts:
+- path: build\*.zip
+  name: package-zip
+- path: build\*.msi
+  name: package-msi
+- path: build\*.exe
+  name: package-exe

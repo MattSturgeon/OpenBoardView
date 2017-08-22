@@ -82,6 +82,19 @@ add_definitions(-DOBV_BUILD="${OBV_BUILD}") # Build info
 add_subdirectory(asset)
 add_subdirectory(src)
 
+if (${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+	if (${CMAKE_VERSION} VERSION_LESS "3.6") # VS_STARTUP_PROJECT introduced in 3.6
+		message("\n")
+		message(WARNING
+		        "Visual Studio's \"StartUp Project\" cannot be set automatically by CMake ${CMAKE_VERSION}.\n"
+		        "Try upgrading to CMake 3.6 or use Visual Studio's solution explorer to manually set "
+		        "\"${PROJECT_NAME}\" as the \"StartUp Project\".")
+	else()
+		set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		             PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+	endif()
+endif()
+
 set(CPACK_BUNDLE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
